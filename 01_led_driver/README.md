@@ -2,6 +2,19 @@
 
 A simple Linux loadable kernel module (LKM) that simulates LED control through a character device at `/dev/myled`.
 
+## Build & Load
+
+```bash
+make
+sudo insmod led_driver.ko
+```
+
+## Unload
+
+```bash
+sudo rmmod led_driver
+```
+
 ## Usage
 
 ### Control the LED
