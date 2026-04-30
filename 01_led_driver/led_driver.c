@@ -12,12 +12,39 @@ MODULE_AUTHOR("Adel Mgadmi");
 MODULE_DESCRIPTION("First LED Driver");
 
 static int major;
+static int led_state = 0;
+
 static int led_open(struct inode *inodep, struct file *filep)
 {
     printk(KERN_INFO "device opened\n");
     return 0;
 }
 
+static ssize_t led_read (struct file *filep, char __user *buffer, size_t len, loff_t *offset){
+	char state_msg [3];
+	int state_msg_len;
+	if (*offset > 0) return 0;
+	state_msg_len = snprintf(state_msg, sizeof(state_msg), "%d\n", led_state);
+	if(copy_to_user(buffer, state_msg, state_msg_len)) return -EFAULT;
+	*offset += state_msg_len;
+	return state_msg_len;
+}
+
+static ssize_t led_write (struct file *filep, const char __user *buffer, size_t len, loff_t *offset){
+
+	char inbuf[3] = {0};
+	if (copy_from_user(inbuf, buffer, len)) return -EFAULT;
+	if (inbuf[0] == '1') {
+		led_state = 1;
+		printk(KERN_INFO "LED Turned On.\n");
+	}
+	else if (inbuf[0] == '0'){
+		led_state = 0;
+		printk(KERN_INFO "LED Turned Off.\n");
+	}
+	return len;
+
+}
 
 static int led_release(struct inode *inodep, struct file *filep)
 {
@@ -28,6 +55,8 @@ static int led_release(struct inode *inodep, struct file *filep)
 static struct file_operations fops = {
     .owner          = THIS_MODULE,
     .open           = led_open,
+    .read 	    = led_read,
+    .write          = led_write,
     .release        = led_release,
 
 };
