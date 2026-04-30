@@ -13,6 +13,8 @@ MODULE_DESCRIPTION("First LED Driver");
 
 static int major;
 static int led_state = 0;
+static struct class *led_class;
+static struct device *led_device;
 
 static int led_open(struct inode *inodep, struct file *filep)
 {
@@ -62,14 +64,19 @@ static struct file_operations fops = {
 };
 static int __init led_init(void)
 {
-     major = register_chrdev(0, "led_driver", &fops);
-     printk(KERN_INFO "Driver loaded, major = %d\n", major);
-     return 0;
+        major = register_chrdev(0, "led_driver", &fops);
+	led_class = class_create(CLASS_NAME);
+	led_device = device_create(led_class, NULL, MKDEV(major,0), NULL, DEVICE_NAME);
+	printk(KERN_INFO "Driver loaded, major = %d\n", major);	
+        return 0;
 }
 
 static void __exit led_exit(void)
 {
-     unregister_chrdev(major, "led_driver");
+	device_destroy(led_class, MKDEV(major,0));
+	class_destroy(led_class);
+        unregister_chrdev(major, "led_driver");
+	printk(KERN_INFO "Driver Unloaded\n");
 }
 
 module_init(led_init);
