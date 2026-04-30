@@ -24,3 +24,6 @@ cat /dev/myled           # prints 0 or 1
 | `write()` | `led_write` | Accepts `'0'` or `'1'` from userspace, updates led_state |
 | `read()`  | `led_read`  | Returns current led_state as ASCII, EOF-safe for `cat` |
 
+## Demo
+
+![LED driver demo](demo.png)
