@@ -1,29 +1,19 @@
-# LED Kernel Driver
+# Embedded Linux Drivers
 
-A simple Linux loadable kernel module (LKM) that simulates LED control through a character device at `/dev/myled`.
+A collection of Linux loadable kernel modules (LKMs) written in C, built and tested on a QEMU virtual machine running Alpine Linux.
 
-## Usage
+## Drivers
 
-### Control the LED
+| Driver | Description |
+|--------|-------------|
+| [`led`](./01_led_driver/) | Character device driver that simulates LED control via `/dev/led_driver` |
 
-```bash
-echo "1" > /dev/led_driver   # turn ON
-echo "0" > /dev/led_driver   # turn OFF
-```
+## Environment
 
-### Read current state
+- **OS:** Alpine Linux (QEMU)
+- **Kernel:** Linux 6.6.117-0-virt
+- **Toolchain:** gcc, make, linux-headers
 
-```bash
-cat /dev/myled           # prints 0 or 1
-```
+## Author
 
-## File Operations
-
-| Operation | Handler | Description |
-|-----------|---------|-------------|
-| `write()` | `led_write` | Accepts `'0'` or `'1'` from userspace, updates led_state |
-| `read()`  | `led_read`  | Returns current led_state as ASCII, EOF-safe for `cat` |
-
-## Demo
-
-![LED driver demo](demo.png)
+[adelmgadmi0](https://github.com/adelmgadmi0)
