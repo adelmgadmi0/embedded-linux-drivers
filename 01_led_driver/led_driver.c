@@ -55,11 +55,11 @@ static int led_release(struct inode *inodep, struct file *filep)
 }
 
 static struct file_operations fops = {
-	.owner          = THIS_MODULE,
-	.open           = led_open,
+	.owner		= THIS_MODULE,
+	.open		= led_open,
 	.read		= led_read,
-	.write          = led_write,
-	.release        = led_release,
+	.write		= led_write,
+	.release	= led_release,
 
 };
 
@@ -71,19 +71,19 @@ static char *led_devnode (const struct device *dev, umode_t *mode)
 
 static int __init led_init(void)
 {
-        major = register_chrdev(0, "led_driver", &fops);
+	major = register_chrdev(0, "led_driver", &fops);
 	led_class = class_create(CLASS_NAME);
 	led_class->devnode = led_devnode;
 	led_device = device_create(led_class, NULL, MKDEV(major,0), NULL, DEVICE_NAME);
 	printk(KERN_INFO "Driver loaded, major = %d\n", major);	
-        return 0;
+	return 0;
 }
 
 static void __exit led_exit(void)
 {
 	device_destroy(led_class, MKDEV(major,0));
 	class_destroy(led_class);
-        unregister_chrdev(major, "led_driver");
+	unregister_chrdev(major, "led_driver");
 	printk(KERN_INFO "Driver Unloaded\n");
 }
 
